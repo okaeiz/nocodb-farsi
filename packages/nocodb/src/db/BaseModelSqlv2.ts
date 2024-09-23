@@ -88,6 +88,9 @@ const GROUP_COL = '__nc_group_id';
 
 const nanoidv2 = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 14);
 
+const isPrimitiveType = (val) =>
+  typeof val === 'string' || typeof val === 'number';
+
 export async function populatePk(
   context: NcContext,
   model: Model,
@@ -163,6 +166,10 @@ export async function getColumnName(
     default:
       return column.column_name;
   }
+}
+
+export function getAs(column: Column) {
+  return column.asId || column.id;
 }
 
 export function replaceDynamicFieldWithValue(
@@ -814,12 +821,11 @@ class BaseModelSqlv2 {
                 ...(await column
                   .getColOptions<BarcodeColumn | QrCodeColumn>(this.context)
                   .then((col) => col.getValueColumn(this.context))),
-                title: column.title,
-                id: column.id,
+                asId: column.id,
               });
             }
 
-            groupByColumns[column.id] = column;
+            groupByColumns[getAs(column)] = column;
 
             switch (column.uidt) {
               case UITypes.Attachment:
@@ -844,9 +850,9 @@ class BaseModelSqlv2 {
                         this.context,
                       )) as RollupColumn,
                     })
-                  ).builder.as(column.id),
+                  ).builder.as(getAs(column)),
                 );
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               case UITypes.Formula: {
                 let selectQb;
@@ -856,14 +862,14 @@ class BaseModelSqlv2 {
                   );
                   selectQb = this.dbDriver.raw(`?? as ??`, [
                     _selectQb.builder,
-                    column.id,
+                    getAs(column),
                   ]);
                 } catch (e) {
                   console.log(e);
-                  selectQb = this.dbDriver.raw(`'ERR' as ??`, [column.id]);
+                  selectQb = this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]);
                 }
                 colSelectors.push(selectQb);
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               }
 
@@ -878,10 +884,10 @@ class BaseModelSqlv2 {
                 });
                 const selectQb = this.dbDriver.raw(`?? as ??`, [
                   this.dbDriver.raw(_selectQb.builder).wrap('(', ')'),
-                  column.id,
+                  getAs(column),
                 ]);
                 colSelectors.push(selectQb);
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               }
               case UITypes.DateTime:
@@ -898,7 +904,7 @@ class BaseModelSqlv2 {
                     colSelectors.push(
                       this.dbDriver.raw(
                         "date_trunc('minute', ??) + interval '0 seconds' as ??",
-                        [columnName, column.id],
+                        [columnName, getAs(column)],
                       ),
                     );
                   } else if (
@@ -906,10 +912,10 @@ class BaseModelSqlv2 {
                     this.dbDriver.clientType() === 'mysql2'
                   ) {
                     colSelectors.push(
-                      // this.dbDriver.raw('??::date as ??', [columnName, column.id]),
+                      // this.dbDriver.raw('??::date as ??', [columnName, getAs(column)]),
                       this.dbDriver.raw(
                         "DATE_SUB(CONVERT_TZ(??, @@GLOBAL.time_zone, '+00:00'), INTERVAL SECOND(??) SECOND) as ??",
-                        [columnName, columnName, column.id],
+                        [columnName, columnName, getAs(column)],
                       ),
                     );
                   } else if (this.dbDriver.clientType() === 'sqlite3') {
@@ -930,7 +936,7 @@ class BaseModelSqlv2 {
    END) AS :id:`,
                         {
                           column: columnName,
-                          id: column.id,
+                          id: getAs(column),
                         },
                       ),
                     );
@@ -938,11 +944,11 @@ class BaseModelSqlv2 {
                     colSelectors.push(
                       this.dbDriver.raw('DATE(??) as ??', [
                         columnName,
-                        column.id,
+                        getAs(column),
                       ]),
                     );
                   }
-                  groupBySelectors.push(column.id);
+                  groupBySelectors.push(getAs(column));
                 }
                 break;
               default: {
@@ -952,9 +958,9 @@ class BaseModelSqlv2 {
                   columns,
                 );
                 colSelectors.push(
-                  this.dbDriver.raw('?? as ??', [columnName, column.id]),
+                  this.dbDriver.raw('?? as ??', [columnName, getAs(column)]),
                 );
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               }
             }
@@ -1133,12 +1139,11 @@ class BaseModelSqlv2 {
                 ...(await column
                   .getColOptions<BarcodeColumn | QrCodeColumn>(this.context)
                   .then((col) => col.getValueColumn(this.context))),
-                title: column.title,
-                id: column.id,
+                asId: column.id,
               });
             }
 
-            groupByColumns[column.id] = column;
+            groupByColumns[getAs(column)] = column;
 
             switch (column.uidt) {
               case UITypes.Attachment:
@@ -1163,9 +1168,9 @@ class BaseModelSqlv2 {
                         this.context,
                       )) as RollupColumn,
                     })
-                  ).builder.as(column.id),
+                  ).builder.as(getAs(column)),
                 );
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               case UITypes.Formula: {
                 let selectQb;
@@ -1175,14 +1180,14 @@ class BaseModelSqlv2 {
                   );
                   selectQb = this.dbDriver.raw(`?? as ??`, [
                     _selectQb.builder,
-                    column.id,
+                    getAs(column),
                   ]);
                 } catch (e) {
                   console.log(e);
-                  selectQb = this.dbDriver.raw(`'ERR' as ??`, [column.id]);
+                  selectQb = this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]);
                 }
                 colSelectors.push(selectQb);
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               }
 
@@ -1197,10 +1202,10 @@ class BaseModelSqlv2 {
                 });
                 const selectQb = this.dbDriver.raw(`?? as ??`, [
                   this.dbDriver.raw(_selectQb.builder).wrap('(', ')'),
-                  column.id,
+                  getAs(column),
                 ]);
                 colSelectors.push(selectQb);
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               }
               case UITypes.DateTime:
@@ -1217,7 +1222,7 @@ class BaseModelSqlv2 {
                     colSelectors.push(
                       this.dbDriver.raw(
                         "date_trunc('minute', ??) + interval '0 seconds' as ??",
-                        [columnName, column.id],
+                        [columnName, getAs(column)],
                       ),
                     );
                   } else if (
@@ -1225,10 +1230,10 @@ class BaseModelSqlv2 {
                     this.dbDriver.clientType() === 'mysql2'
                   ) {
                     colSelectors.push(
-                      // this.dbDriver.raw('??::date as ??', [columnName, column.id]),
+                      // this.dbDriver.raw('??::date as ??', [columnName, getAs(column)]),
                       this.dbDriver.raw(
                         "DATE_SUB(CONVERT_TZ(??, @@GLOBAL.time_zone, '+00:00'), INTERVAL SECOND(??) SECOND) as ??",
-                        [columnName, columnName, column.id],
+                        [columnName, columnName, getAs(column)],
                       ),
                     );
                   } else if (this.dbDriver.clientType() === 'sqlite3') {
@@ -1249,7 +1254,7 @@ class BaseModelSqlv2 {
    END) AS :id:`,
                         {
                           column: columnName,
-                          id: column.id,
+                          id: getAs(column),
                         },
                       ),
                     );
@@ -1257,11 +1262,11 @@ class BaseModelSqlv2 {
                     colSelectors.push(
                       this.dbDriver.raw('DATE(??) as ??', [
                         columnName,
-                        column.id,
+                        getAs(column),
                       ]),
                     );
                   }
-                  groupBySelectors.push(column.id);
+                  groupBySelectors.push(getAs(column));
                 }
                 break;
               default: {
@@ -1271,9 +1276,9 @@ class BaseModelSqlv2 {
                   columns,
                 );
                 colSelectors.push(
-                  this.dbDriver.raw('?? as ??', [columnName, column.id]),
+                  this.dbDriver.raw('?? as ??', [columnName, getAs(column)]),
                 );
-                groupBySelectors.push(column.id);
+                groupBySelectors.push(getAs(column));
                 break;
               }
             }
@@ -1383,7 +1388,7 @@ class BaseModelSqlv2 {
               );
             } else {
               tQb.orderBy(
-                column.id,
+                getAs(column),
                 sort.direction,
                 sort.direction === 'desc' ? 'LAST' : 'FIRST',
               );
@@ -1797,11 +1802,10 @@ class BaseModelSqlv2 {
             ...(await column
               .getColOptions<BarcodeColumn | QrCodeColumn>(this.context)
               .then((col) => col.getValueColumn(this.context))),
-            title: column.title,
-            id: column.id,
+            asId: column.id,
           });
 
-        groupByColumns[column.id] = column;
+        groupByColumns[getAs(column)] = column;
 
         switch (column.uidt) {
           case UITypes.Attachment:
@@ -1827,9 +1831,9 @@ class BaseModelSqlv2 {
                     this.context,
                   )) as RollupColumn,
                 })
-              ).builder.as(column.id),
+              ).builder.as(getAs(column)),
             );
-            groupBySelectors.push(column.id);
+            groupBySelectors.push(getAs(column));
             break;
           case UITypes.Formula:
             {
@@ -1841,16 +1845,16 @@ class BaseModelSqlv2 {
 
                 selectQb = this.dbDriver.raw(`?? as ??`, [
                   _selectQb.builder,
-                  column.id,
+                  getAs(column),
                 ]);
               } catch (e) {
                 logger.log(e);
                 // return dummy select
-                selectQb = this.dbDriver.raw(`'ERR' as ??`, [column.id]);
+                selectQb = this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]);
               }
 
               selectors.push(selectQb);
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
           case UITypes.Lookup:
@@ -1866,11 +1870,11 @@ class BaseModelSqlv2 {
 
               const selectQb = this.dbDriver.raw(`?? as ??`, [
                 this.dbDriver.raw(_selectQb.builder).wrap('(', ')'),
-                column.id,
+                getAs(column),
               ]);
 
               selectors.push(selectQb);
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
           case UITypes.CreatedTime:
@@ -1887,7 +1891,7 @@ class BaseModelSqlv2 {
                 selectors.push(
                   this.dbDriver.raw(
                     "date_trunc('minute', ??) + interval '0 seconds' as ??",
-                    [columnName, column.id],
+                    [columnName, getAs(column)],
                   ),
                 );
               } else if (
@@ -1895,10 +1899,10 @@ class BaseModelSqlv2 {
                 this.dbDriver.clientType() === 'mysql2'
               ) {
                 selectors.push(
-                  // this.dbDriver.raw('??::date as ??', [columnName, column.id]),
+                  // this.dbDriver.raw('??::date as ??', [columnName, getAs(column)]),
                   this.dbDriver.raw(
                     "DATE_SUB(CONVERT_TZ(??, @@GLOBAL.time_zone, '+00:00'), INTERVAL SECOND(??) SECOND) as ??",
-                    [columnName, columnName, column.id],
+                    [columnName, columnName, getAs(column)],
                   ),
                 );
               } else if (this.dbDriver.clientType() === 'sqlite3') {
@@ -1919,16 +1923,19 @@ class BaseModelSqlv2 {
    END) AS :id:`,
                     {
                       column: columnName,
-                      id: column.id,
+                      id: getAs(column),
                     },
                   ),
                 );
               } else {
                 selectors.push(
-                  this.dbDriver.raw('DATE(??) as ??', [columnName, column.id]),
+                  this.dbDriver.raw('DATE(??) as ??', [
+                    columnName,
+                    getAs(column),
+                  ]),
                 );
               }
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
           default:
@@ -1939,9 +1946,9 @@ class BaseModelSqlv2 {
                 columns,
               );
               selectors.push(
-                this.dbDriver.raw('?? as ??', [columnName, column.id]),
+                this.dbDriver.raw('?? as ??', [columnName, getAs(column)]),
               );
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
         }
@@ -2055,7 +2062,7 @@ class BaseModelSqlv2 {
           );
         } else {
           qb.orderBy(
-            column.id,
+            getAs(column),
             sort.direction,
             sort.direction === 'desc' ? 'LAST' : 'FIRST',
           );
@@ -2104,8 +2111,7 @@ class BaseModelSqlv2 {
             ...(await column
               .getColOptions<BarcodeColumn | QrCodeColumn>(this.context)
               .then((col) => col.getValueColumn(this.context))),
-            title: column.title,
-            id: column.id,
+            asId: column.id,
           });
 
         switch (column.uidt) {
@@ -2132,9 +2138,9 @@ class BaseModelSqlv2 {
                     this.context,
                   )) as RollupColumn,
                 })
-              ).builder.as(column.id),
+              ).builder.as(getAs(column)),
             );
-            groupBySelectors.push(column.id);
+            groupBySelectors.push(getAs(column));
             break;
           case UITypes.Formula: {
             let selectQb;
@@ -2145,16 +2151,16 @@ class BaseModelSqlv2 {
 
               selectQb = this.dbDriver.raw(`?? as ??`, [
                 _selectQb.builder,
-                column.id,
+                getAs(column),
               ]);
             } catch (e) {
               logger.log(e);
               // return dummy select
-              selectQb = this.dbDriver.raw(`'ERR' as ??`, [column.id]);
+              selectQb = this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]);
             }
 
             selectors.push(selectQb);
-            groupBySelectors.push(column.id);
+            groupBySelectors.push(getAs(column));
             break;
           }
           case UITypes.Lookup:
@@ -2170,11 +2176,11 @@ class BaseModelSqlv2 {
 
               const selectQb = this.dbDriver.raw(`?? as ??`, [
                 this.dbDriver.raw(_selectQb.builder).wrap('(', ')'),
-                column.id,
+                getAs(column),
               ]);
 
               selectors.push(selectQb);
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
           case UITypes.CreatedTime:
@@ -2191,7 +2197,7 @@ class BaseModelSqlv2 {
                 selectors.push(
                   this.dbDriver.raw(
                     "date_trunc('minute', ??) + interval '0 seconds' as ??",
-                    [columnName, column.id],
+                    [columnName, getAs(column)],
                   ),
                 );
               } else if (
@@ -2201,7 +2207,7 @@ class BaseModelSqlv2 {
                 selectors.push(
                   this.dbDriver.raw(
                     "CONVERT_TZ(DATE_SUB(??, INTERVAL SECOND(??) SECOND), @@GLOBAL.time_zone, '+00:00') as ??",
-                    [columnName, columnName, column.id],
+                    [columnName, columnName, getAs(column)],
                   ),
                 );
               } else if (this.dbDriver.clientType() === 'sqlite3') {
@@ -2222,16 +2228,19 @@ class BaseModelSqlv2 {
    END) as :id:`,
                     {
                       column: columnName,
-                      id: column.id,
+                      id: getAs(column),
                     },
                   ),
                 );
               } else {
                 selectors.push(
-                  this.dbDriver.raw('DATE(??) as ??', [columnName, column.id]),
+                  this.dbDriver.raw('DATE(??) as ??', [
+                    columnName,
+                    getAs(column),
+                  ]),
                 );
               }
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
           default:
@@ -2242,9 +2251,9 @@ class BaseModelSqlv2 {
                 columns,
               );
               selectors.push(
-                this.dbDriver.raw('?? as ??', [columnName, column.id]),
+                this.dbDriver.raw('?? as ??', [columnName, getAs(column)]),
               );
-              groupBySelectors.push(column.id);
+              groupBySelectors.push(getAs(column));
             }
             break;
         }
@@ -4154,7 +4163,7 @@ class BaseModelSqlv2 {
               // the value 2023-01-01 10:00:00 (UTC) would display as 2023-01-01 18:00:00 (UTC+8)
               // our existing logic is based on UTC, during the query, we need to take the UTC value
               // hence, we use CONVERT_TZ to convert back to UTC value
-              res[sanitize(column.id || columnName)] = this.dbDriver.raw(
+              res[sanitize(getAs(column) || columnName)] = this.dbDriver.raw(
                 `CONVERT_TZ(??, @@GLOBAL.time_zone, '+00:00')`,
                 [`${sanitize(alias || this.tnPath)}.${columnName}`],
               );
@@ -4167,7 +4176,7 @@ class BaseModelSqlv2 {
                 column.dt !== 'timestamp with time zone' &&
                 column.dt !== 'timestamptz'
               ) {
-                res[sanitize(column.id || columnName)] = this.dbDriver
+                res[sanitize(getAs(column) || columnName)] = this.dbDriver
                   .raw(
                     `?? AT TIME ZONE CURRENT_SETTING('timezone') AT TIME ZONE 'UTC'`,
                     [`${sanitize(alias || this.tnPath)}.${columnName}`],
@@ -4180,14 +4189,14 @@ class BaseModelSqlv2 {
               // convert to database timezone,
               // then convert to UTC
               if (column.dt !== 'datetimeoffset') {
-                res[sanitize(column.id || columnName)] = this.dbDriver.raw(
+                res[sanitize(getAs(column) || columnName)] = this.dbDriver.raw(
                   `CONVERT(DATETIMEOFFSET, ?? AT TIME ZONE 'UTC')`,
                   [`${sanitize(alias || this.tnPath)}.${columnName}`],
                 );
                 break;
               }
             }
-            res[sanitize(column.id || columnName)] = sanitize(
+            res[sanitize(getAs(column) || columnName)] = sanitize(
               `${alias || this.tnPath}.${columnName}`,
             );
           }
@@ -4201,7 +4210,7 @@ class BaseModelSqlv2 {
           );
 
           if (!qrCodeColumn.fk_qr_value_column_id) {
-            qb.select(this.dbDriver.raw(`? as ??`, ['ERR!', column.id]));
+            qb.select(this.dbDriver.raw(`? as ??`, ['ERR!', getAs(column)]));
             break;
           }
 
@@ -4244,7 +4253,7 @@ class BaseModelSqlv2 {
           );
 
           if (!barcodeColumn.fk_barcode_value_column_id) {
-            qb.select(this.dbDriver.raw(`? as ??`, ['ERR!', column.id]));
+            qb.select(this.dbDriver.raw(`? as ??`, ['ERR!', getAs(column)]));
             break;
           }
 
@@ -4267,7 +4276,7 @@ class BaseModelSqlv2 {
                   aliasToColumnBuilder,
                 );
                 qb.select({
-                  [column.id]: selectQb.builder,
+                  [getAs(column)]: selectQb.builder,
                 });
               } catch {
                 continue;
@@ -4275,7 +4284,7 @@ class BaseModelSqlv2 {
               break;
             default: {
               qb.select({
-                [column.id]: barcodeValueColumn.column_name,
+                [getAs(column)]: barcodeValueColumn.column_name,
               });
               break;
             }
@@ -4293,12 +4302,15 @@ class BaseModelSqlv2 {
                 aliasToColumnBuilder,
               );
               qb.select(
-                this.dbDriver.raw(`?? as ??`, [selectQb.builder, column.id]),
+                this.dbDriver.raw(`?? as ??`, [
+                  selectQb.builder,
+                  getAs(column),
+                ]),
               );
             } catch (e) {
               logger.log(e);
               // return dummy select
-              qb.select(this.dbDriver.raw(`'ERR' as ??`, [column.id]));
+              qb.select(this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]));
             }
           }
           break;
@@ -4321,7 +4333,7 @@ class BaseModelSqlv2 {
                         colOption.type,
                         `${colOption.label}`,
                         selectQb.builder,
-                        column.id,
+                        getAs(column),
                       ],
                     ),
                   );
@@ -4334,7 +4346,7 @@ class BaseModelSqlv2 {
                         colOption.type,
                         `${colOption.label}`,
                         selectQb.builder,
-                        column.id,
+                        getAs(column),
                       ],
                     ),
                   );
@@ -4347,13 +4359,13 @@ class BaseModelSqlv2 {
                         colOption.type,
                         `${colOption.label}`,
                         selectQb.builder,
-                        column.id,
+                        getAs(column),
                       ],
                     ),
                   );
                   break;
                 default:
-                  qb.select(this.dbDriver.raw(`'ERR' as ??`, [column.id]));
+                  qb.select(this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]));
               }
             } else if (colOption.type === 'webhook') {
               switch (this.dbDriver.client.config.client) {
@@ -4365,7 +4377,7 @@ class BaseModelSqlv2 {
                         colOption.type,
                         `${colOption.label}`,
                         colOption.fk_webhook_id,
-                        column.id,
+                        getAs(column),
                       ],
                     ),
                   );
@@ -4378,7 +4390,7 @@ class BaseModelSqlv2 {
                         colOption.type,
                         `${colOption.label}`,
                         colOption.fk_webhook_id,
-                        column.id,
+                        getAs(column),
                       ],
                     ),
                   );
@@ -4391,19 +4403,19 @@ class BaseModelSqlv2 {
                         colOption.type,
                         `${colOption.label}`,
                         colOption.fk_webhook_id,
-                        column.id,
+                        getAs(column),
                       ],
                     ),
                   );
                   break;
                 default:
-                  qb.select(this.dbDriver.raw(`'ERR' as ??`, [column.id]));
+                  qb.select(this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]));
               }
             }
           } catch (e) {
             logger.log(e);
             // return dummy select
-            qb.select(this.dbDriver.raw(`'ERR' as ??`, [column.id]));
+            qb.select(this.dbDriver.raw(`'ERR' as ??`, [getAs(column)]));
           }
           break;
         }
@@ -4421,7 +4433,7 @@ class BaseModelSqlv2 {
                   this.context,
                 )) as RollupColumn,
               })
-            ).builder.as(column.id),
+            ).builder.as(getAs(column)),
           );
           break;
         case UITypes.CreatedBy:
@@ -4432,7 +4444,7 @@ class BaseModelSqlv2 {
             _columns || (await this.model.getColumns(this.context)),
           );
 
-          res[sanitize(column.id || columnName)] = sanitize(
+          res[sanitize(getAs(column) || columnName)] = sanitize(
             `${alias || this.tnPath}.${columnName}`,
           );
           break;
@@ -4440,7 +4452,7 @@ class BaseModelSqlv2 {
         default:
           if (this.isPg) {
             if (column.dt === 'bytea') {
-              res[sanitize(column.id || column.column_name)] =
+              res[sanitize(getAs(column) || column.column_name)] =
                 this.dbDriver.raw(
                   `encode(??.??, '${
                     column.meta?.format === 'hex' ? 'hex' : 'escape'
@@ -4451,7 +4463,7 @@ class BaseModelSqlv2 {
             }
           }
 
-          res[sanitize(column.id || column.column_name)] = sanitize(
+          res[sanitize(getAs(column) || column.column_name)] = sanitize(
             `${alias || this.tnPath}.${column.column_name}`,
           );
           break;
@@ -4830,6 +4842,12 @@ class BaseModelSqlv2 {
   }
 
   comparePks(pk1, pk2) {
+    // If either pk1 or pk2 is a string or number, convert both to strings and compare
+    if (isPrimitiveType(pk1) || isPrimitiveType(pk2)) {
+      return `${pk1}` === `${pk2}`;
+    }
+
+    // If both are objects (composite keys), compare them using deep equality check
     return equal(pk1, pk2);
   }
 
@@ -7955,12 +7973,15 @@ class BaseModelSqlv2 {
     return data;
   }
 
-  protected sanitizeQuery(query: string) {
-    if (!this.isPg && !this.isMssql && !this.isSnowflake) {
-      return unsanitize(query);
-    } else {
-      return sanitize(query);
-    }
+  protected sanitizeQuery(query: string | string[]) {
+    const fn = (q: string) => {
+      if (!this.isPg && !this.isMssql && !this.isSnowflake) {
+        return unsanitize(q);
+      } else {
+        return sanitize(q);
+      }
+    };
+    return Array.isArray(query) ? query.map(fn) : fn(query);
   }
 
   async runOps(ops: Promise<string>[], trx = this.dbDriver) {

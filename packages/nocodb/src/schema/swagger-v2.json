@@ -13,12 +13,12 @@
       "name": "Meta APIs",
       "tags": [
         "Bases",
-        "Sources",
         "Tables",
         "Views",
         "Fields",
         "Filters",
-        "Sorts"
+        "Sorts",
+        "Sources"
       ]
     },
     {
@@ -225,7 +225,7 @@
     },
     "/api/v2/meta/workspaces/{workspaceId}/bases": {
       "get": {
-        "summary": "Workspace bases list ☁",
+        "summary": "List Bases",
         "operationId": "workspace-base-list",
         "responses": {
           "200": {
@@ -240,9 +240,88 @@
           }
         },
         "tags": [
-          "Workspace base"
+          "Workspace base", "Bases"
         ],
-        "description": "Workspace bases list"
+        "description": "This API fetches list of bases associated with the specified workspace ID. The workspace ID must be provided in the path as a required parameter. The API returns a list in JSON format, containing metadata and configuration for each base.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Base",
+        "operationId": "workspace-base-create",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Base"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ProjectReq"
+                  }
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "sources": [
+                      {
+                        "alias": "string",
+                        "config": null,
+                        "enabled": true,
+                        "id": "string",
+                        "inflection_column": "camelize",
+                        "inflection_table": "camelize",
+                        "is_meta": true,
+                        "order": 1,
+                        "base_id": "string",
+                        "type": "mysql2",
+                        "updated_at": "2023-03-01 14:27:36"
+                      }
+                    ],
+                    "color": "#24716E",
+                    "created_at": "2023-03-01 14:27:36",
+                    "deleted": true,
+                    "description": "This is my base description",
+                    "id": "p_124hhlkbeasewh",
+                    "is_meta": true,
+                    "meta": {},
+                    "order": 0,
+                    "prefix": "nc_vm5q__",
+                    "status": "string",
+                    "title": "my-base",
+                    "external": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Base", "Bases"
+        ],
+        "description": "This API endpoint creates a new base within a given workspace, identified by the workspace ID. The API returns the created base in JSON format.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
       },
       "parameters": [
         {
@@ -1319,7 +1398,7 @@
           }
         },
         "tags": [
-          "Base", "Bases"
+          "Base", "Internal"
         ],
         "description": "Get info such as node version, arch, platform, is docker, rootdb and package version of a given base",
         "parameters": [
@@ -1615,170 +1694,6 @@
         ]
       }
     },
-    "/api/v2/meta/bases/": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/xc-token"
-        }
-      ],
-      "get": {
-        "summary": "List Bases",
-        "operationId": "base-list",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectList"
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": {
-                      "list": [
-                        {
-                          "sources": [
-                            {
-                              "alias": "string",
-                              "config": null,
-                              "created_at": "2023-03-01 14:27:36",
-                              "enabled": true,
-                              "id": "string",
-                              "inflection_column": "camelize",
-                              "inflection_table": "camelize",
-                              "is_meta": true,
-                              "order": 1,
-                              "base_id": "string",
-                              "type": "mysql2",
-                              "updated_at": "2023-03-01 14:27:36"
-                            }
-                          ],
-                          "color": "#24716E",
-                          "created_at": "2023-03-01 14:27:36",
-                          "deleted": true,
-                          "description": "This is my base description",
-                          "id": "p_124hhlkbeasewh",
-                          "is_meta": true,
-                          "meta": {},
-                          "order": 0,
-                          "prefix": "nc_vm5q__",
-                          "status": "string",
-                          "title": "my-base",
-                          "updated_at": "2023-03-01 14:27:36"
-                        }
-                      ],
-                      "pageInfo": {
-                        "isFirstPage": true,
-                        "isLastPage": true,
-                        "page": 1,
-                        "pageSize": 10,
-                        "totalRows": 1
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "description": "List all base meta data",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ],
-        "tags": [
-          "Base", "Bases"
-        ]
-      },
-      "post": {
-        "summary": "Create Base",
-        "operationId": "base-create",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Base"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/ProjectReq"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "external": {
-                        "type": "boolean",
-                        "default": false,
-                        "description": "If true, the base will us an external database else it will use the root database"
-                      }
-                    }
-                  }
-                ]
-              },
-              "examples": {
-                "Example 1": {
-                  "value": {
-                    "sources": [
-                      {
-                        "alias": "string",
-                        "config": null,
-                        "enabled": true,
-                        "id": "string",
-                        "inflection_column": "camelize",
-                        "inflection_table": "camelize",
-                        "is_meta": true,
-                        "order": 1,
-                        "base_id": "string",
-                        "type": "mysql2",
-                        "updated_at": "2023-03-01 14:27:36"
-                      }
-                    ],
-                    "color": "#24716E",
-                    "created_at": "2023-03-01 14:27:36",
-                    "deleted": true,
-                    "description": "This is my base description",
-                    "id": "p_124hhlkbeasewh",
-                    "is_meta": true,
-                    "meta": {},
-                    "order": 0,
-                    "prefix": "nc_vm5q__",
-                    "status": "string",
-                    "title": "my-base",
-                    "external": false
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Base", "Bases"
-        ],
-        "description": "Create a new base",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      }
-    },
     "/api/v2/meta/duplicate/{baseId}/{sourceId}": {
       "post": {
         "summary": "Duplicate Base Source",
@@ -1988,9 +1903,9 @@
         }
       ],
       "get": {
-        "summary": "Get Base",
+        "summary": "Get Base Schema",
         "operationId": "base-read",
-        "description": "Get the info of a given base",
+        "description": "This API fetches detailed information about the base specified by its unique baseId. It provides metadata such as the base's title, description, creation date, color, and configuration settings. ",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -2047,39 +1962,6 @@
           }
         }
       },
-      "delete": {
-        "summary": "Delete Base",
-        "operationId": "base-delete",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": true
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "Base", "Bases"
-        ],
-        "description": "Delete the given base",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      },
       "patch": {
         "summary": "Update Base",
         "operationId": "base-update",
@@ -2126,7 +2008,194 @@
             }
           }
         },
-        "description": "Update the given base",
+        "description": "This API updates the properties of a specified base, such as its title, color, order, or metadata. The baseId is required to identify the base to be updated. ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Base",
+        "operationId": "base-delete",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "Base", "Bases"
+        ],
+        "description": "This API deletes the base identified by its baseId. Deleting a base is a permanent action that removes all its associated data and cannot be undone. Use this API with caution when managing your workspaces.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      }
+    },
+    "/api/v2/meta/bases/": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/xc-token"
+        }
+      ],
+      "get": {
+        "summary": "List Bases (OSS)",
+        "operationId": "base-list",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectList"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "list": [
+                        {
+                          "sources": [
+                            {
+                              "alias": "string",
+                              "config": null,
+                              "created_at": "2023-03-01 14:27:36",
+                              "enabled": true,
+                              "id": "string",
+                              "inflection_column": "camelize",
+                              "inflection_table": "camelize",
+                              "is_meta": true,
+                              "order": 1,
+                              "base_id": "string",
+                              "type": "mysql2",
+                              "updated_at": "2023-03-01 14:27:36"
+                            }
+                          ],
+                          "color": "#24716E",
+                          "created_at": "2023-03-01 14:27:36",
+                          "deleted": true,
+                          "description": "This is my base description",
+                          "id": "p_124hhlkbeasewh",
+                          "is_meta": true,
+                          "meta": {},
+                          "order": 0,
+                          "prefix": "nc_vm5q__",
+                          "status": "string",
+                          "title": "my-base",
+                          "updated_at": "2023-03-01 14:27:36"
+                        }
+                      ],
+                      "pageInfo": {
+                        "isFirstPage": true,
+                        "isLastPage": true,
+                        "page": 1,
+                        "pageSize": 10,
+                        "totalRows": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "description": "Retrieve a list of all available bases (OSS version).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ],
+        "tags": [
+          "Base", "Bases"
+        ]
+      },
+      "post": {
+        "summary": "Create Base (OSS)",
+        "operationId": "base-create",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Base"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ProjectReq"
+                  }
+                ]
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "sources": [
+                      {
+                        "alias": "string",
+                        "config": null,
+                        "enabled": true,
+                        "id": "string",
+                        "inflection_column": "camelize",
+                        "inflection_table": "camelize",
+                        "is_meta": true,
+                        "order": 1,
+                        "base_id": "string",
+                        "type": "mysql2",
+                        "updated_at": "2023-03-01 14:27:36"
+                      }
+                    ],
+                    "color": "#24716E",
+                    "created_at": "2023-03-01 14:27:36",
+                    "deleted": true,
+                    "description": "This is my base description",
+                    "id": "p_124hhlkbeasewh",
+                    "is_meta": true,
+                    "meta": {},
+                    "order": 0,
+                    "prefix": "nc_vm5q__",
+                    "status": "string",
+                    "title": "my-base",
+                    "external": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Base", "Bases"
+        ],
+        "description": "Create a new base in the system (OSS version).",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -2165,185 +2234,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v2/meta/bases/{baseId}/sources/{sourceId}": {
-      "parameters": [
-        {
-          "schema": {
-            "$ref": "#/components/schemas/Id",
-            "example": "p_124hhlkbeasewh",
-            "type": "string"
-          },
-          "name": "baseId",
-          "in": "path",
-          "required": true,
-          "description": "Unique Base ID"
-        },
-        {
-          "schema": {
-            "type": "string",
-            "pattern": "ds_j04jmxh5xg10lu"
-          },
-          "name": "sourceId",
-          "in": "path",
-          "required": true,
-          "description": "Unique Source ID"
-        }
-      ],
-      "get": {
-        "summary": "Get Source",
-        "operationId": "source-read",
-        "description": "Get the source details of a given base",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ],
-        "tags": [
-          "Source", "Sources"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Source"
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": {
-                      "alias": null,
-                      "config": "<ENCRYPTED>",
-                      "enabled": 1,
-                      "id": "ds_krsappzu9f8vmo",
-                      "inflection_column": "camelize",
-                      "inflection_table": "camelize",
-                      "is_meta": 1,
-                      "meta": null,
-                      "order": 1,
-                      "base_id": "p_01clqvzik3izk6",
-                      "type": "mysql2"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Source",
-        "operationId": "source-delete",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": true
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "Source"
-        ],
-        "description": "Delete the source details of a given base",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      },
-      "patch": {
-        "summary": "Update Source",
-        "operationId": "source-update",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": {
-                      "id": "ds_rrplkgy0pq1f3c",
-                      "base_id": "p_63b4q0qengen1x",
-                      "alias": "sakila",
-                      "meta": null,
-                      "is_meta": null,
-                      "type": "mysql2",
-                      "inflection_column": "camelize",
-                      "inflection_table": "camelize",
-                      "created_at": "2023-03-11T10:31:15.341Z",
-                      "updated_at": "2023-03-11T10:32:25.763Z",
-                      "enabled": true,
-                      "order": 2
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "Source"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              },
-              "examples": {
-                "Example 1": {
-                  "value": {
-                    "alias": "sakila",
-                    "type": "mysql2",
-                    "config": {
-                      "client": "mysql2",
-                      "connection": {
-                        "host": "localhost",
-                        "port": "3306",
-                        "user": "root",
-                        "password": "password",
-                        "database": "sakila"
-                      }
-                    },
-                    "inflection_column": "camelize",
-                    "inflection_table": "camelize"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Update the source details of a given base",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
       }
     },
     "/api/v2/meta/bases/{baseId}/sources/": {
@@ -2478,6 +2368,185 @@
           "Source", "Sources"
         ],
         "description": "Create a new source on a given base",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      }
+    },
+    "/api/v2/meta/bases/{baseId}/sources/{sourceId}": {
+      "parameters": [
+        {
+          "schema": {
+            "$ref": "#/components/schemas/Id",
+            "example": "p_124hhlkbeasewh",
+            "type": "string"
+          },
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "description": "Unique Base ID"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "ds_j04jmxh5xg10lu"
+          },
+          "name": "sourceId",
+          "in": "path",
+          "required": true,
+          "description": "Unique Source ID"
+        }
+      ],
+      "get": {
+        "summary": "Get Source Schema",
+        "operationId": "source-read",
+        "description": "Get the source details of a given base",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ],
+        "tags": [
+          "Source", "Sources"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Source"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "alias": null,
+                      "config": "<ENCRYPTED>",
+                      "enabled": 1,
+                      "id": "ds_krsappzu9f8vmo",
+                      "inflection_column": "camelize",
+                      "inflection_table": "camelize",
+                      "is_meta": 1,
+                      "meta": null,
+                      "order": 1,
+                      "base_id": "p_01clqvzik3izk6",
+                      "type": "mysql2"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Source",
+        "operationId": "source-update",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "id": "ds_rrplkgy0pq1f3c",
+                      "base_id": "p_63b4q0qengen1x",
+                      "alias": "sakila",
+                      "meta": null,
+                      "is_meta": null,
+                      "type": "mysql2",
+                      "inflection_column": "camelize",
+                      "inflection_table": "camelize",
+                      "created_at": "2023-03-11T10:31:15.341Z",
+                      "updated_at": "2023-03-11T10:32:25.763Z",
+                      "enabled": true,
+                      "order": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "Source"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "alias": "sakila",
+                    "type": "mysql2",
+                    "config": {
+                      "client": "mysql2",
+                      "connection": {
+                        "host": "localhost",
+                        "port": "3306",
+                        "user": "root",
+                        "password": "password",
+                        "database": "sakila"
+                      }
+                    },
+                    "inflection_column": "camelize",
+                    "inflection_table": "camelize"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Update the source details of a given base",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Source",
+        "operationId": "source-delete",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "Source"
+        ],
+        "description": "Delete the source details of a given base",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -2808,6 +2877,59 @@
           "description": "Unique Base ID"
         }
       ],
+      "get": {
+        "summary": "List Tables",
+        "operationId": "db-table-list",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/TableList"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "page",
+            "description": "Page number for pagination."
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of items per page."
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for the table list."
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "includeM2M",
+            "description": "A boolean to specify whether to include many-to-many relationships tables in the API response"
+          }
+        ],
+        "tags": [
+          "DB Table", "Tables"
+        ],
+        "description": "This endpoint allows you to list all tables within a specified base. The API returns a paginated list of table.\n\n**Pagination**: The response is paginated by default, with the first page being returned initially. The response includes the following additional information in the `pageInfo` JSON block:\n\n- `totalRows`: Indicates the total number of tables available in the specified Base ID.\n- `page`: Specifies the current page number.\n- `pageSize`: Defaults to 25 and defines the number of table items listed on each page.\n- `isFirstPage`: A boolean value that indicates whether the current page is the first page of table records in the dataset.\n- `isLastPage`: A boolean value that indicates whether the current page is the last page of table records in the dataset."
+      },
       "post": {
         "summary": "Create Table",
         "operationId": "db-table-create",
@@ -3196,61 +3318,12 @@
         "tags": [
           "DB Table", "Tables"
         ],
-        "description": "Create a new table in a given base",
+        "description": "This endpoint allows you to create a new table in the specified base.",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
           }
         ]
-      },
-      "get": {
-        "summary": "List Tables",
-        "operationId": "db-table-list",
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/TableList"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          },
-          {
-            "schema": {
-              "type": "number"
-            },
-            "in": "query",
-            "name": "page"
-          },
-          {
-            "schema": {
-              "type": "number"
-            },
-            "in": "query",
-            "name": "pageSize"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "sort"
-          },
-          {
-            "schema": {
-              "type": "boolean"
-            },
-            "in": "query",
-            "name": "includeM2M"
-          }
-        ],
-        "tags": [
-          "DB Table", "Tables"
-        ],
-        "description": "List all tables in a given base"
       }
     },
     "/api/v2/meta/tables/{tableId}": {
@@ -3268,7 +3341,7 @@
         }
       ],
       "get": {
-        "summary": "Read Table",
+        "summary": "Get Table Metadata",
         "operationId": "db-table-read",
         "responses": {
           "200": {
@@ -3646,7 +3719,7 @@
         "tags": [
           "DB Table", "Tables"
         ],
-        "description": "Read the table meta data by the given table ID",
+        "description": "Get the table meta data by the given table ID",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -3705,24 +3778,17 @@
                     "type": "string",
                     "description": "Table title",
                     "example": "Users"
-                  },
-                  "base_id": {
-                    "type": "string",
-                    "description": "Base ID",
-                    "example": "p_124hhlkbeasewh"
-                  },
-                  "meta": {
-                    "$ref": "#/components/schemas/Meta"
                   }
-                }
+                },
+                "required": [
+                  "table_name"
+                ]
               },
               "examples": {
                 "Example 1": {
                   "value": {
                     "table_name": "users",
-                    "title": "Users",
-                    "base_id": "p_124hhlkbeasewh",
-                    "meta": null
+                    "title": "Users"
                   }
                 }
               }
@@ -3762,7 +3828,7 @@
         "tags": [
           "DB Table", "Tables"
         ],
-        "description": "Delete the table meta data by the given table ID",
+        "description": "Delete table by the given table ID.",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -4600,6 +4666,27 @@
           "required": true
         }
       ],
+      "get": {
+        "summary": "Get Column Metadata",
+        "operationId": "db-table-column-get",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB Table Column", "Fields"
+        ],
+        "description": "Get the existing column by the given column ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
       "patch": {
         "summary": "Update Column",
         "operationId": "db-table-column-update",
@@ -4652,27 +4739,6 @@
           "DB Table Column", "Fields"
         ],
         "description": "Delete the existing column by the given column ID",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      },
-      "get": {
-        "summary": "Get Column",
-        "operationId": "db-table-column-get",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "DB Table Column", "Fields"
-        ],
-        "description": "Get the existing column by the given column ID",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -5294,7 +5360,7 @@
         }
       ],
       "get": {
-        "summary": "List Columns In View",
+        "summary": "List View Columns",
         "operationId": "db-view-column-list",
         "responses": {
           "200": {
@@ -5365,7 +5431,7 @@
         "tags": [
           "DB View Column", "Views"
         ],
-        "description": "List all columns by ViewID",
+        "description": "This endpoint allows you to list all columns within a specified view. The API returns a paginated list of columns.\n\n**Pagination**: The response is paginated by default, with the first page being returned initially. The response includes the following additional information in the `pageInfo` JSON block:\n\n- `totalRows`: Indicates the total number of columns available in the specified View ID.\n- `page`: Specifies the current page number.\n- `pageSize`: Defaults to 25 and defines the number of column items listed on each page.\n- `isFirstPage`: A boolean value that indicates whether the current page is the first page of column records in the dataset.\n- `isLastPage`: A boolean value that indicates whether the current page is the last page of column records in the dataset.",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -5599,7 +5665,7 @@
         ]
       },
       "post": {
-        "summary": "Update View Sort",
+        "summary": "Create View Sort",
         "operationId": "db-table-sort-create",
         "responses": {
           "200": {
@@ -5669,7 +5735,7 @@
         }
       ],
       "get": {
-        "summary": "Get Sort",
+        "summary": "Get Sort Metadata",
         "operationId": "db-table-sort-get",
         "responses": {
           "200": {
@@ -5808,7 +5874,7 @@
         }
       ],
       "get": {
-        "summary": "Get View Filter",
+        "summary": "List View Filters",
         "operationId": "db-table-filter-read",
         "responses": {
           "200": {
@@ -5938,150 +6004,6 @@
         ]
       }
     },
-    "/api/v2/meta/hooks/{hookId}/filters": {
-      "parameters": [
-        {
-          "schema": {
-            "$ref": "#/components/schemas/Id",
-            "example": "hk_0063k4o1frnxbr"
-          },
-          "name": "hookId",
-          "in": "path",
-          "required": true,
-          "description": "Unique Hook ID"
-        }
-      ],
-      "get": {
-        "summary": "Get Hook Filter",
-        "operationId": "db-table-webhook-filter-read",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FilterList"
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": {
-                      "list": [
-                        {
-                          "source_id": "ds_g4ccx6e77h1dmi",
-                          "comparison_op": "eq",
-                          "comparison_sub_op": null,
-                          "created_at": "2023-03-02 18:18:05",
-                          "fk_column_id": "cl_d7ah9n2qfupgys",
-                          "fk_hook_id": null,
-                          "fk_parent_id": null,
-                          "fk_view_id": "vw_b739e29vqmrxnf",
-                          "id": "fi_xn647tpmdq8fu8",
-                          "is_group": null,
-                          "logical_op": "and",
-                          "order": 1,
-                          "base_id": "p_xm3thidrblw4n7",
-                          "updated_at": "2023-03-02 18:18:05",
-                          "value": "foo"
-                        }
-                      ],
-                      "pageInfo": {
-                        "isFirstPage": true,
-                        "isLastPage": true,
-                        "page": 1,
-                        "pageSize": 10,
-                        "totalRows": 1
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "DB Table Webhook Filter", "Webhooks"
-        ],
-        "description": "Get the filter data in a given Hook",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      },
-      "post": {
-        "summary": "Create Hook Filter",
-        "operationId": "db-table-webhook-filter-create",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Filter"
-                },
-                "examples": {
-                  "Example 1": {
-                    "value": {
-                      "source_id": "ds_g4ccx6e77h1dmi",
-                      "comparison_op": "eq",
-                      "comparison_sub_op": null,
-                      "created_at": "2023-03-02 18:18:05",
-                      "fk_column_id": "cl_d7ah9n2qfupgys",
-                      "fk_hook_id": null,
-                      "fk_parent_id": null,
-                      "fk_view_id": "vw_b739e29vqmrxnf",
-                      "id": "fi_xn647tpmdq8fu8",
-                      "is_group": null,
-                      "logical_op": "and",
-                      "order": 1,
-                      "base_id": "p_xm3thidrblw4n7",
-                      "updated_at": "2023-03-02 18:18:05",
-                      "value": "foo"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "DB Table Webhook Filter", "Webhooks"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FilterReq"
-              },
-              "examples": {
-                "Example 1": {
-                  "value": {
-                    "comparison_op": "eq",
-                    "comparison_sub_op": null,
-                    "fk_column_id": "cl_d7ah9n2qfupgys",
-                    "is_group": false,
-                    "logical_op": "and",
-                    "value": "foo"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Create filter(s) in a given Hook",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      }
-    },
     "/api/v2/meta/hooks/{hookId}/logs": {
       "parameters": [
         {
@@ -6184,7 +6106,7 @@
         }
       ],
       "get": {
-        "summary": "Get Filter",
+        "summary": "Get Filter Metadata",
         "operationId": "db-table-filter-get",
         "responses": {
           "200": {
@@ -6462,9 +6384,7 @@
                   "value": {
                     "title": "My Grid View",
                     "type": 3,
-                    "copy_from_id": null,
-                    "fk_grp_col_id": null,
-                    "fk_geo_data_col_id": null
+                    "fk_grp_col_id": null
                   }
                 }
               }
@@ -6557,7 +6477,7 @@
         }
       ],
       "get": {
-        "summary": "List Grid Columns",
+        "summary": "List Grid View Columns",
         "operationId": "db-view-grid-columns-list",
         "responses": {
           "200": {
@@ -6595,7 +6515,7 @@
           }
         },
         "tags": [
-          "DB View", "Views"
+          "DB View", "Internal"
         ],
         "description": "List all columns in the given Grid",
         "parameters": [
@@ -6620,7 +6540,7 @@
         }
       ],
       "patch": {
-        "summary": "Update Grid Column",
+        "summary": "Update Grid View Column",
         "operationId": "db-view-grid-column-update",
         "responses": {
           "200": {
@@ -6740,9 +6660,7 @@
                   "value": {
                     "title": "My Form View",
                     "type": 1,
-                    "copy_from_id": null,
-                    "fk_grp_col_id": null,
-                    "fk_geo_data_col_id": null
+                    "fk_grp_col_id": null
                   }
                 }
               }
@@ -6836,7 +6754,7 @@
         ]
       },
       "get": {
-        "summary": "Get Form",
+        "summary": "Get Form View Metadata",
         "operationId": "db-view-form-read",
         "responses": {
           "200": {
@@ -6925,7 +6843,7 @@
         }
       ],
       "patch": {
-        "summary": "Update Form Column",
+        "summary": "Update Form View Column",
         "operationId": "db-view-form-column-update",
         "responses": {
           "200": {
@@ -7042,9 +6960,7 @@
                   "value": {
                     "title": "My Gallery View",
                     "type": 2,
-                    "copy_from_id": null,
-                    "fk_grp_col_id": null,
-                    "fk_geo_data_col_id": null
+                    "fk_grp_col_id": null
                   }
                 }
               }
@@ -7071,6 +6987,34 @@
           "description": "Unique Gallery View ID"
         }
       ],
+      "get": {
+        "summary": "Get Gallery View Metadata",
+        "operationId": "db-view-gallery-read",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Gallery"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB View", "Views"
+        ],
+        "description": "Get the Gallery View data with Gallery ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
       "patch": {
         "summary": "Update Gallery View",
         "operationId": "db-view-gallery-update",
@@ -7115,34 +7059,6 @@
           }
         },
         "description": "Update the Gallery View data with Gallery ID",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
-      },
-      "get": {
-        "summary": "Get Gallery View",
-        "operationId": "db-view-gallery-read",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Gallery"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "DB View", "Views"
-        ],
-        "description": "Get the Gallery View data with Gallery ID",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -7218,9 +7134,7 @@
                   "value": {
                     "title": "My Kanban View",
                     "type": 4,
-                    "copy_from_id": null,
-                    "fk_grp_col_id": "cl_g0a89q9xdry3lu",
-                    "fk_geo_data_col_id": null
+                    "fk_grp_col_id": "cl_g0a89q9xdry3lu"
                   }
                 }
               }
@@ -7248,6 +7162,34 @@
           "description": "Unique Kanban View ID"
         }
       ],
+      "get": {
+        "summary": "Get Kanban View Metadata",
+        "operationId": "db-view-kanban-read",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kanban"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB View", "Views"
+        ],
+        "description": "Get the Kanban View data by Kanban ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
       "patch": {
         "summary": "Update Kanban View",
         "operationId": "db-view-kanban-update",
@@ -7340,34 +7282,6 @@
             "$ref": "#/components/parameters/xc-token"
           }
         ]
-      },
-      "get": {
-        "summary": "Get Kanban View",
-        "operationId": "db-view-kanban-read",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Kanban"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          }
-        },
-        "tags": [
-          "DB View", "Views"
-        ],
-        "description": "Get the Kanban View data by Kanban ID",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/xc-token"
-          }
-        ]
       }
     },
     "/api/v2/meta/tables/{tableId}/maps": {
@@ -7438,9 +7352,7 @@
                   "value": {
                     "title": "My Map View",
                     "type": 5,
-                    "copy_from_id": null,
-                    "fk_grp_col_id": null,
-                    "fk_geo_data_col_id": "cl_uu1meolj00tlrq"
+                    "fk_grp_col_id": null
                   }
                 }
               }
@@ -9740,7 +9652,7 @@
         ]
       },
       "post": {
-        "summary": "Comment Rows",
+        "summary": "Add Comment",
         "operationId": "utils-comment-row",
         "responses": {
           "200": {
@@ -9807,23 +9719,7 @@
     "/api/v2/meta/comment/{commentId}": {
       "parameters": [
         {
-          "schema": {
-            "type": "string",
-            "example": "adt_zlskd6rlf3liay"
-          },
-          "name": "commentId",
-          "in": "path",
-          "required": true,
-          "description": "Comment ID"
-        },
-        {
-          "name": "xc-auth",
-          "in": "header",
-          "required": false,
-          "schema": {
-            "type": "string"
-          },
-          "description": "Auth Token is a JWT Token generated based on the logged-in user. By default, the token is only valid for 10 hours. However, you can change the value by defining it using environment variable NC_JWT_EXPIRES_IN."
+          "$ref": "#/components/parameters/xc-token"
         }
       ],
       "patch": {
@@ -10626,7 +10522,7 @@
         }
       ],
       "patch": {
-        "summary": "Update Hook",
+        "summary": "Update Table Hook",
         "operationId": "db-table-webhook-update",
         "responses": {
           "200": {
@@ -10703,7 +10599,7 @@
         ]
       },
       "delete": {
-        "summary": "Delete Hook",
+        "summary": "Delete Table Hook",
         "operationId": "db-table-webhook-delete",
         "responses": {
           "200": {
@@ -10729,6 +10625,150 @@
           "DB Table Webhook", "Webhooks"
         ],
         "description": "Delete the exsiting hook by its ID",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      }
+    },
+    "/api/v2/meta/hooks/{hookId}/filters": {
+      "parameters": [
+        {
+          "schema": {
+            "$ref": "#/components/schemas/Id",
+            "example": "hk_0063k4o1frnxbr"
+          },
+          "name": "hookId",
+          "in": "path",
+          "required": true,
+          "description": "Unique Hook ID"
+        }
+      ],
+      "get": {
+        "summary": "Get Table Hook Filter",
+        "operationId": "db-table-webhook-filter-read",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterList"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "list": [
+                        {
+                          "source_id": "ds_g4ccx6e77h1dmi",
+                          "comparison_op": "eq",
+                          "comparison_sub_op": null,
+                          "created_at": "2023-03-02 18:18:05",
+                          "fk_column_id": "cl_d7ah9n2qfupgys",
+                          "fk_hook_id": null,
+                          "fk_parent_id": null,
+                          "fk_view_id": "vw_b739e29vqmrxnf",
+                          "id": "fi_xn647tpmdq8fu8",
+                          "is_group": null,
+                          "logical_op": "and",
+                          "order": 1,
+                          "base_id": "p_xm3thidrblw4n7",
+                          "updated_at": "2023-03-02 18:18:05",
+                          "value": "foo"
+                        }
+                      ],
+                      "pageInfo": {
+                        "isFirstPage": true,
+                        "isLastPage": true,
+                        "page": 1,
+                        "pageSize": 10,
+                        "totalRows": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB Table Webhook Filter", "Webhooks"
+        ],
+        "description": "Get the filter data in a given Hook",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/xc-token"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Table Hook Filter",
+        "operationId": "db-table-webhook-filter-create",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Filter"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "source_id": "ds_g4ccx6e77h1dmi",
+                      "comparison_op": "eq",
+                      "comparison_sub_op": null,
+                      "created_at": "2023-03-02 18:18:05",
+                      "fk_column_id": "cl_d7ah9n2qfupgys",
+                      "fk_hook_id": null,
+                      "fk_parent_id": null,
+                      "fk_view_id": "vw_b739e29vqmrxnf",
+                      "id": "fi_xn647tpmdq8fu8",
+                      "is_group": null,
+                      "logical_op": "and",
+                      "order": 1,
+                      "base_id": "p_xm3thidrblw4n7",
+                      "updated_at": "2023-03-02 18:18:05",
+                      "value": "foo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        },
+        "tags": [
+          "DB Table Webhook Filter", "Webhooks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterReq"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "comparison_op": "eq",
+                    "comparison_sub_op": null,
+                    "fk_column_id": "cl_d7ah9n2qfupgys",
+                    "is_group": false,
+                    "logical_op": "and",
+                    "value": "foo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Create filter(s) in a given Hook",
         "parameters": [
           {
             "$ref": "#/components/parameters/xc-token"
@@ -11389,7 +11429,7 @@
       "get": {
         "summary": "List API Tokens in Base",
         "tags": [
-          "API Token", "API Tokens"
+          "API Token", "Internal"
         ],
         "responses": {
           "200": {
@@ -13749,7 +13789,7 @@
             "type": "string"
           },
           "cdf": {
-            "$ref": "#/components/schemas/StringOrNullOrBooleanOrNumber",
+            "$ref": "#/components/schemas/FieldDefaultValue",
             "description": "Column Default"
           },
           "clen": {
@@ -14092,98 +14132,7 @@
         }
       },
       "ColumnReq": {
-        "allOf": [
-          {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/FormulaColumnReq"
-              },
-              {
-                "$ref": "#/components/schemas/LinkToAnotherColumnReq"
-              },
-              {
-                "$ref": "#/components/schemas/LookupColumnReq"
-              },
-              {
-                "$ref": "#/components/schemas/NormalColumnRequest"
-              },
-              {
-                "$ref": "#/components/schemas/RollupColumnReq"
-              }
-            ]
-          },
-          {
-            "properties": {
-              "column_name": {
-                "type": "string"
-              },
-              "column_order": {
-                "description": "Column order in a specific view",
-                "properties": {
-                  "order": {
-                    "type": "number"
-                  },
-                  "view_id": {
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              },
-              "title": {
-                "maxLength": 255,
-                "minLength": 1,
-                "type": "string"
-              }
-            },
-            "required": [
-              "title"
-            ]
-          }
-        ],
-        "description": "Model for Column Request",
-        "examples": [
-          {
-            "ai": 0,
-            "au": 0,
-            "source_id": "ds_krsappzu9f8vmo",
-            "cc": "",
-            "cdf": null,
-            "clen": "45",
-            "column_name": "title",
-            "cop": "2",
-            "created_at": "2023-03-02 13:14:16",
-            "csn": "utf8mb4",
-            "ct": "varchar(45)",
-            "deleted": null,
-            "dt": "varchar",
-            "dtx": "specificType",
-            "dtxp": "45",
-            "dtxs": null,
-            "fk_model_id": "md_yvwvbt2i78rgcm",
-            "id": "cl_0j9gv0oi8vjy46",
-            "meta": null,
-            "np": null,
-            "ns": null,
-            "order": 2,
-            "pk": 0,
-            "base_id": "p_01clqvzik3izk6",
-            "pv": 1,
-            "rqd": 0,
-            "system": 0,
-            "title": "Title",
-            "uidt": "SingleLineText",
-            "un": 0,
-            "unique": 0,
-            "updated_at": "2023-03-02 13:14:16",
-            "validate": null,
-            "virtual": null
-          }
-        ],
-        "title": "Column Request Model",
-        "type": "object",
-        "x-stoplight": {
-          "id": "aipiq4098ocg3"
-        }
+        "$ref": "#/components/schemas/NormalColumnRequest"
       },
       "CommentReq": {
         "description": "Model for Comment Request",
@@ -14247,7 +14196,10 @@
             "description": "Foreign Key to Model",
             "example": "md_ehn5izr99m7d45"
           }
-        }
+        },
+        "required": [
+          "fk_model_id"
+        ]
       },
       "Filter": {
         "description": "Model for Filter",
@@ -15746,16 +15698,6 @@
             "$ref": "#/components/schemas/Id",
             "description": "Foreign Key to Column"
           },
-          "help": {
-            "maxLength": 255,
-            "type": "string"
-          },
-          "label": {
-            "description": "The label of the column",
-            "example": "My Column",
-            "maxLength": 255,
-            "type": "string"
-          },
           "width": {
             "description": "The width of the column",
             "example": "200px",
@@ -15825,18 +15767,9 @@
         "examples": [
           {
             "active": 0,
-            "async": 0,
-            "description": "This is my hook description",
-            "env": "all",
-            "event": "after",
-            "fk_model_id": "md_rsu68aqjsbyqtl",
             "id": "string",
             "notification": "{\"type\":\"URL\",\"payload\":{\"method\":\"POST\",\"body\":\"{{ json data }}\",\"headers\":[{}],\"parameters\":[{}],\"auth\":\"\",\"path\":\"http://example.com\"}}",
-            "null": null,
             "operation": "insert",
-            "retries": 10,
-            "retry_interval": 60000,
-            "timeout": 60000,
             "title": "My Webhook"
           }
         ],
@@ -15846,41 +15779,13 @@
           "id": "5jvfnece2nu6w"
         },
         "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id",
+            "description": "Unique Hook ID"
+          },
           "active": {
             "$ref": "#/components/schemas/Bool",
             "description": "Is the hook active?"
-          },
-          "async": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is the hook aysnc?"
-          },
-          "description": {
-            "type": "string",
-            "description": "Hook Description",
-            "example": "This is my hook description"
-          },
-          "env": {
-            "type": "string",
-            "example": "all",
-            "description": "Environment for the hook"
-          },
-          "event": {
-            "enum": [
-              "after",
-              "before"
-            ],
-            "type": "string",
-            "description": "Event Type for the operation",
-            "example": "after"
-          },
-          "fk_model_id": {
-            "type": "string",
-            "description": "Foreign Key to Model",
-            "example": "md_rsu68aqjsbyqtl"
-          },
-          "id": {
-            "$ref": "#/components/schemas/Id",
-            "description": "Unique ID"
           },
           "notification": {
             "description": "Hook Notification including info such as type, payload, method, body, and etc",
@@ -15902,21 +15807,6 @@
             "description": "Hook Operation",
             "example": "insert"
           },
-          "retries": {
-            "type": "number",
-            "description": "Retry Count",
-            "example": 10
-          },
-          "retry_interval": {
-            "type": "number",
-            "description": "Retry Interval",
-            "example": 60000
-          },
-          "timeout": {
-            "type": "number",
-            "example": 60000,
-            "description": "Timeout"
-          },
           "title": {
             "type": "string",
             "description": "Hook Title",
@@ -15925,18 +15815,6 @@
           "type": {
             "type": "string",
             "description": "Hook Type"
-          },
-          "version": {
-            "type": "string",
-            "x-stoplight": {
-              "id": "socewqvadj91n"
-            },
-            "example": "v2",
-            "description": "Hook Version",
-            "enum": [
-              "v1",
-              "v2"
-            ]
           }
         }
       },
@@ -15947,67 +15825,19 @@
         },
         "examples": [
           {
-            "active": 0,
-            "async": 0,
-            "description": "This is my hook description",
-            "env": "all",
-            "event": "after",
-            "fk_model_id": "md_rsu68aqjsbyqtl",
-            "id": "string",
-            "notification": "{\"type\":\"URL\",\"payload\":{\"method\":\"POST\",\"body\":\"{{ json data }}\",\"headers\":[{}],\"parameters\":[{}],\"auth\":\"\",\"path\":\"http://example.com\"}}",
-            "null": null,
-            "operation": "insert",
-            "retries": 10,
-            "retry_interval": 60000,
-            "timeout": 60000,
             "title": "My Webhook",
-            "condition": false
+            "notification": "{\"type\":\"URL\",\"payload\":{\"method\":\"POST\",\"body\":\"{{ json data }}\",\"headers\":[{}],\"parameters\":[{}],\"auth\":\"\",\"path\":\"http://example.com\"}}",
+            "operation": "insert",
+            "type": "url"
           }
         ],
         "title": "Hook Request Model",
         "type": "object",
         "properties": {
-          "active": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is the hook active?"
-          },
-          "async": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is the hook aysnc?"
-          },
-          "description": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Hook Description"
-          },
-          "env": {
+          "title": {
             "type": "string",
-            "example": "all",
-            "description": "Environment for the hook"
-          },
-          "event": {
-            "enum": [
-              "after",
-              "before"
-            ],
-            "type": "string",
-            "description": "Event Type for the operation",
-            "example": "after"
-          },
-          "fk_model_id": {
-            "type": "string",
-            "description": "Foreign Key to Model",
-            "example": "md_rsu68aqjsbyqtl"
-          },
-          "id": {
-            "$ref": "#/components/schemas/Id",
-            "description": "Unique ID"
-          },
-          "notification": {
-            "description": "Hook Notification including info such as type, payload, method, body, and etc",
-            "type": [
-              "object",
-              "string"
-            ]
+            "description": "Hook Title",
+            "example": "My Webhook"
           },
           "operation": {
             "enum": [
@@ -16022,25 +15852,12 @@
             "description": "Hook Operation",
             "example": "insert"
           },
-          "retries": {
-            "type": "number",
-            "description": "Retry Count",
-            "example": 10
-          },
-          "retry_interval": {
-            "type": "number",
-            "description": "Retry Interval",
-            "example": 60000
-          },
-          "timeout": {
-            "type": "number",
-            "example": 60000,
-            "description": "Timeout"
-          },
-          "title": {
-            "type": "string",
-            "description": "Hook Title",
-            "example": "My Webhook"
+          "notification": {
+            "description": "Hook Notification including info such as type, payload, method, body, and etc",
+            "type": [
+              "object",
+              "string"
+            ]
           },
           "type": {
             "type": [
@@ -16048,20 +15865,13 @@
               "null"
             ],
             "description": "Hook Type"
-          },
-          "condition": {
-            "$ref": "#/components/schemas/Bool",
-            "x-stoplight": {
-              "id": "wwzoum7rrlwun"
-            },
-            "description": "Is this hook assoicated with some filters"
           }
         },
         "required": [
-          "event",
+          "title",
           "notification",
           "operation",
-          "title"
+          "type"
         ]
       },
       "HookList": {
@@ -17071,193 +16881,1679 @@
           "id": "cxh7walcnpkn0"
         }
       },
-      "NormalColumnRequest": {
-        "description": "Model for Normal Column Request",
-        "examples": [
+      "FieldTypeEnum": {
+        "description": "Column data type. Defaults to SingleLineText",
+        "enum": [
+          "SingleLineText",
+          "LongText",
+          "PhoneNumber",
+          "Email",
+          "URL",
+          "Number",
+          "Decimal",
+          "Percent",
+          "Currency",
+          "Duration",
+          "Date",
+          "Time",
+          "DateTime",
+          "Year",
+          "SingleSelect",
+          "MultiSelect",
+          "User",
+          "Attachment",
+          "Checkbox",
+          "Rating",
+          "Button",
+          "Formula",
+          "Barcode",
+          "QrCode",
+          "Links",
+          "LinkToAnotherRecord",
+          "Lookup",
+          "Rollup",
+          "ID",
+          "CreatedTime",
+          "LastModifiedTime",
+          "CreatedBy",
+          "LastModifiedBy",
+          "GeoData",
+          "Geometry",
+          "JSON",
+          "SpecificDBType"
+        ],
+        "type": "string"
+      },
+      "FieldTypeDefaultValue": {
+        "description": "Column Default Value. Defaults to NULL",
+        "type": "string"
+      },
+      "FieldTypeMetaValidation": {
+        "description": "Enable validation for this column. Defaults to FALSE",
+        "properties": {
+          "validation": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldTypeMetaDecimal": {
+        "description": "Column decimal precision. Defaults to 0",
+        "properties": {
+          "precision": {
+            "type": "number"
+          }
+        }
+      },
+      "FieldTypeMetaLongText": {
+        "description": "Enable rich text for this column. Defaults to FALSE",
+        "properties": {
+          "richText": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldTypeMetaPercent": {
+        "description": "Enable percent progress display for this column. Defaults to FALSE",
+        "properties": {
+          "is_progress": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldTypeMetaCurrency": {
+        "description": "Currency settings for this column. Locale defaults to `en-US` and currency code defaults to `USD`",
+        "properties": {
+          "currency_locale": {
+            "type": "string"
+          },
+          "currency_code": {
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeMetaDuration": {
+        "description": "Duration display settings for this column. Options available are \n 1. `h:mm` - Hours and Minutes\n 2. `h:mm:ss` - Hours, Minutes and Seconds\n 3. `h:mm:ss.s` - Hours, Minutes, Seconds and Tenth of a Second\n 4. `h:mm:ss.ss` - Hours, Minutes, Seconds and Hundredth of a Second\n 5. `h:mm:ss.sss` - Hours, Minutes, Seconds and Thousandth of a Second\n\n\nDefaults to `h:mm`",
+        "properties": {
+          "duration": {
+            "type": "number"
+          }
+        }
+      },
+      "FieldTypeMetaDate": {
+        "description": "Date display format for this column. Defaults to `YYYY-MM-DD`",
+        "properties": {
+          "date_format": {
+            "description": "Options available are\n 1. `YYYY-MM-DD` - Year, Month and Day\n 2. `YYYY/MM/DD` - Year, Month and Day\n 3. `DD-MM-YYYY` - Day, Month and Year\n 4. `MM-DD-YYYY` - Month, Day and Year\n 5. `DD/MM/YYYY` - Day, Month and Year\n 6. `MM/DD/YYYY` - Month, Day and Year\n 7. `DD MM YYYY` - Day, Month and Year\n 8. `MM DD YYYY` - Month, Day and Year\n 9. `YYYY MM DD` - Year, Month and Day\n10. `YYYY MM` - Year and Month\n\n\nDefaults to `YYYY-MM-DD`",
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeMetaTime": {
+        "description": "Time display format for this column. Defaults to `24 hour`",
+        "properties": {
+          "is12hrFormat": {
+            "description": "Options available are \n 1. `12 hour` - 12 Hour Format\n 2. `24 hour` - 24 Hour Format\n\n\nDefaults to `24 hour`",
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldTypeMetaDateTime": {
+        "description": "Date Time display format for this column. Defaults to `YYYY-MM-DD h:mm 24h format`",
+        "properties": {
+          "date_format": {
+            "description": "Options available are \n 1. `YYYY-MM-DD` - Year, Month and Day\n 2. `YYYY/MM/DD` - Year, Month and Day\n 3. `DD-MM-YYYY` - Day, Month and Year\n 4. `MM-DD-YYYY` - Month, Day and Year\n 5. `DD/MM/YYYY` - Day, Month and Year\n 6. `MM/DD/YYYY` - Month, Day and Year\n 7. `DD MM YYYY` - Day, Month and Year\n 8. `MM DD YYYY` - Month, Day and Year\n 9. `YYYY MM DD` - Year, Month and Day\n\n\nDefaults to `YYYY-MM-DD.",
+            "type": "string"
+          },
+          "time_format": {
+            "description": "Options available are \n 1. `h:mm` - Hours and Minutes\n 2. `h:mm:ss` - Hours, Minutes and Seconds\n 3. `h:mm:ss.SSS` - Hours, Minutes, Seconds and Thousandth of a Second\n\n\nDefaults to `h:mm`",
+            "type": "string"
+          },
+          "is12hrFormat": {
+            "description": "Options available are \n 1. `12 hour` - 12 Hour Format\n 2. `24 hour` - 24 Hour Format\n\n\nDefaults to `24 hour`",
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldTypeMetaSelectOption": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "description": "Title of the option. This is the data that will be displayed in the cell tile",
+            "type": "string"
+          },
+          "color": {
+            "description": "Color of the option tile. Hexadecimal color code format. Example: `#FF0000`",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeMetaSelectOptionsArray": {
+        "type": "array",
+        "description": "Array of select options for this column",
+        "items": {
+          "$ref": "#/components/schemas/FieldTypeMetaSelectOption"
+        }
+      },
+      "FieldTypeMetaSelect": {
+        "description": "Select options for this column",
+        "properties": {
+          "options": {
+            "$ref": "#/components/schemas/FieldTypeMetaSelectOptionsArray"
+          }
+        },
+        "type": "object"
+      },
+      "FieldTypeMetaUser": {
+        "description": "User settings to allow for multiple users in this column. Defaults to FALSE",
+        "properties": {
+          "is_multi": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldTypeMetaCheckbox": {
+        "description": "Checkbox settings for this column.",
+        "properties": {
+          "color": {
+            "description": "Color of the checkbox icon. Hexadecimal color code format. Example: `#FF0000`",
+            "type": "string"
+          },
+          "iconIdx": {
+            "description": "Icon index for the checkbox. Defaults to 0. Options available are \n 1. `Square`\n 2. `Check`\n 3. `Star`\n 4. `Heart`\n 5. `Circle`\n 6. `Thumbs up`\n 7. `Flag`\n\n\nDefaults to 1 : `Square`",
+            "type": "number"
+          }
+        }
+      },
+      "FieldTypeMetaRating": {
+        "description": "Rating settings for this column",
+        "properties": {
+          "color": {
+            "description": "Color of the rating icon. Hexadecimal color code format. Example: `#FF0000`",
+            "type": "string"
+          },
+          "iconIdx": {
+            "description": "Icon index for the rating icon. Defaults to 0. Options available are \n 1. `Square`\n 2. `Check`\n 3. `Star`\n 4. `Heart`\n 5. `Circle`\n 6. `Thumbs up`\n 7. `Flag`\n\n\nDefaults to 1 : `Square`",
+            "type": "number"
+          },
+          "max": {
+            "description": "Maximum value for the rating. Defaults to 5. Allowed range 1-10",
+            "type": "number"
+          }
+        }
+      },
+      "FieldTypeMetaButton": {
+        "description": "Button settings for this column",
+        "oneOf": [
           {
-            "ai": true,
-            "au": true,
-            "cc": "string",
-            "cdf": "string",
-            "column_name": "string",
-            "csn": "string",
-            "dt": "string",
-            "dtx": "string",
-            "dtxp": 0,
-            "dtxs": 0,
-            "np": 0,
-            "ns": 0,
-            "pk": true,
-            "pv": true,
-            "rqd": true,
-            "title": "string",
-            "uidt": "ID",
-            "un": true,
-            "unique": true
+            "$ref": "#/components/schemas/FieldTypeMetaButtonURL"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeMetaButtonWebhook"
           }
         ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "Open URL": "#/components/schemas/FieldTypeMetaButtonURL",
+            "Run Webhook": "#/components/schemas/FieldTypeMetaButtonWebhook"
+          }
+        }
+      },
+      "FieldTypeMetaButtonURL": {
+        "title": "Open URL",
+        "type": "object",
+        "description": "Button URL settings for this column",
         "properties": {
-          "ai": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column auto-incremented?"
-          },
-          "au": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column auto-updated datetime field?"
-          },
-          "cc": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Column Comment"
-          },
-          "cdf": {
-            "$ref": "#/components/schemas/StringOrNullOrBooleanOrNumber",
-            "description": "Column Default Value"
-          },
-          "column_name": {
-            "maxLength": 255,
-            "minLength": 1,
+          "type": {
+            "description": "Button type: Open URL",
             "type": "string",
-            "description": "Column Name"
+            "enum": [
+              "url"
+            ]
           },
-          "csn": {
-            "$ref": "#/components/schemas/StringOrNull"
+          "formula": {
+            "description": "Formula to generate the URL",
+            "type": "string"
           },
-          "dt": {
+          "icon": {
+            "description": "Icon of the button",
+            "type": "string"
+          },
+          "label": {
+            "description": "Label of the button",
+            "type": "string"
+          },
+          "color": {
+            "description": "Color of the button.",
             "type": "string",
-            "description": "Data Type"
+            "enum": [
+              "brand", "red", "green", "maroon", "blue", "orange", "pink", "purple", "yellow", "gray"
+            ]
           },
-          "dtx": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Data Type Extra"
+          "theme": {
+            "description": "Theme of the button",
+            "type": "string",
+            "enum": [
+              "solid", "light", "text"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "formula"
+        ]
+      },
+      "FieldTypeMetaButtonAction": {
+        "title": "AI Action",
+        "description": "Button Action settings for this column",
+        "properties": {
+          "type": {
+            "description": "Button type: AI Action",
+            "type": "string",
+            "enum": [
+              "action"
+            ]
           },
-          "dtxp": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Data Type Extra Precision"
+          "icon": {
+            "description": "Icon of the button",
+            "type": "string"
           },
-          "dtxs": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/StringOrNull"
-              },
-              {
-                "type": "number"
-              }
-            ],
-            "description": "Data Type Extra Scale"
+          "label": {
+            "description": "Label of the button",
+            "type": "string"
           },
-          "np": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/StringOrNull"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "description": "Numeric Precision"
+          "color": {
+            "description": "Color of the button.",
+            "type": "string",
+            "enum": [
+              "brand", "red", "green", "maroon", "blue", "orange", "pink", "purple", "yellow", "gray"
+            ]
           },
-          "ns": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/StringOrNull"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "description": "Numeric Scale"
+          "theme": {
+            "description": "Theme of the button",
+            "type": "string",
+            "enum": [
+              "solid", "light", "text"
+            ]
+          }
+        }
+      },
+      "FieldTypeMetaButtonWebhook": {
+        "title": "Run Webhook",
+        "description": "Button Webhook settings for this column",
+        "properties": {
+          "type": {
+            "description": "Button type: Run Webhook",
+            "type": "string",
+            "enum": [
+              "webhook"
+            ]
           },
-          "pk": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column a primary key?"
+          "fk_webhook_id": {
+            "description": "Foreign Key to Webhook (of type `Manual Trigger`)",
+            "type": "string"
           },
-          "pv": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column a primary value?"
+          "icon": {
+            "description": "Icon of the button",
+            "type": "string"
           },
-          "rqd": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column required?"
+          "label": {
+            "description": "Label of the button",
+            "type": "string"
           },
+          "color": {
+            "description": "Color of the button.",
+            "type": "string",
+            "enum": [
+              "brand", "red", "green", "maroon", "blue", "orange", "pink", "purple", "yellow", "gray"
+            ]
+          },
+          "theme": {
+            "description": "Theme of the button",
+            "type": "string",
+            "enum": [
+              "solid", "light", "text"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "fk_webhook_id"
+        ]
+      },
+      "FieldTypeMetaBarcode": {
+        "description": "Barcode settings for this column",
+        "properties": {
+          "barcode_format": {
+            "type": "string"
+          },
+          "fk_barcode_value_column_id": {
+            "description": "Barcode value column ID",
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeMetaQrCode": {
+        "description": "QR Code settings for this column",
+        "properties": {
+          "fk_qr_value_column_id": {
+            "description": "QR code value column ID",
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeMetaLinks": {
+        "description": "Links settings for this column",
+        "properties": {
+          "type": {
+            "description": "Column type: Links",
+            "type": "string",
+            "enum": [
+              "hm",
+              "mm"
+            ]
+          },
+          "fk_child_column_id": {
+            "description": "Foreign Key to child column",
+            "type": "string"
+          },
+          "fk_parent_column_id": {
+            "description": "Foreign Key to parent column",
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeMetaLookup": {
+        "description": "Lookup settings for this column",
+        "properties": {
+          "fk_relation_column_id": {
+            "description": "Foreign Key to relation column",
+            "type": "string"
+          },
+          "fk_lookup_column_id": {
+            "description": "Foreign Key to lookup column",
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeMetaRollup": {
+        "description": "Rollup settings for this column",
+        "properties": {
+          "fk_relation_column_id": {
+            "description": "Foreign Key to relation column",
+            "type": "string"
+          },
+          "fk_rollup_column_id": {
+            "description": "Foreign Key to rollup column",
+            "type": "string"
+          },
+          "rollup_function": {
+            "description": "Foreign Key to rollup function",
+            "type": "string"
+          }
+        }
+      },
+      "FieldTypeDescription": {
+        "description": "Column description. Defaults to NULL",
+        "type": "string"
+      },
+      "FieldTypeRequired": {
+        "description": "Set this column as required. Defaults to FALSE",
+        "type": "boolean"
+      },
+      "FieldTypePrimaryValue": {
+        "description": "Set this column as primary value. Defaults to FALSE",
+        "type": "boolean"
+      },
+      "NormalColumnRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/FieldTypeSingleLineText"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeLongText"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypePhoneNumber"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeEmail"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeURL"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeNumber"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeDecimal"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypePercent"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeCurrency"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeDuration"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeDate"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeTime"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeDateTime"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeYear"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeSingleSelect"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeMultiSelect"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeUser"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeAttachment"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeCheckbox"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeRating"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeButton"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeFormula"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeBarcode"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeQrCode"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeLinks"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeLinkToAnotherRecord"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeLookup"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeRollup"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeID"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeCreatedTime"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeLastModifiedTime"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeCreatedBy"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeLastModifiedBy"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeGeoData"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeGeometry"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeJSON"
+          },
+          {
+            "$ref": "#/components/schemas/FieldTypeSpecificDBType"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "uidt",
+          "mapping": {
+            "SingleLineText": "#/components/schemas/FieldTypeSingleLineText",
+            "LongText": "#/components/schemas/FieldTypeLongText",
+            "PhoneNumber": "#/components/schemas/FieldTypePhoneNumber",
+            "Email": "#/components/schemas/FieldTypeEmail",
+            "URL": "#/components/schemas/FieldTypeURL",
+            "Number": "#/components/schemas/FieldTypeNumber",
+            "Decimal": "#/components/schemas/FieldTypeDecimal",
+            "Percent": "#/components/schemas/FieldTypePercent",
+            "Currency": "#/components/schemas/FieldTypeCurrency",
+            "Duration": "#/components/schemas/FieldTypeDuration",
+            "Date": "#/components/schemas/FieldTypeDate",
+            "Time": "#/components/schemas/FieldTypeTime",
+            "DateTime": "#/components/schemas/FieldTypeDateTime",
+            "Year": "#/components/schemas/FieldTypeYear",
+            "SingleSelect": "#/components/schemas/FieldTypeSingleSelect",
+            "MultiSelect": "#/components/schemas/FieldTypeMultiSelect",
+            "User": "#/components/schemas/FieldTypeUser",
+            "Attachment": "#/components/schemas/FieldTypeAttachment",
+            "Checkbox": "#/components/schemas/FieldTypeCheckbox",
+            "Rating": "#/components/schemas/FieldTypeRating",
+            "Button": "#/components/schemas/FieldTypeButton",
+            "Formula": "#/components/schemas/FieldTypeFormula",
+            "Barcode": "#/components/schemas/FieldTypeBarcode",
+            "QrCode": "#/components/schemas/FieldTypeQrCode",
+            "Links": "#/components/schemas/FieldTypeLinks",
+            "LinkToAnotherRecord": "#/components/schemas/FieldTypeLinkToAnotherRecord",
+            "Lookup": "#/components/schemas/FieldTypeLookup",
+            "Rollup": "#/components/schemas/FieldTypeRollup",
+            "ID": "#/components/schemas/FieldTypeID",
+            "CreatedTime": "#/components/schemas/FieldTypeCreatedTime",
+            "LastModifiedTime": "#/components/schemas/FieldTypeLastModifiedTime",
+            "CreatedBy": "#/components/schemas/FieldTypeCreatedBy",
+            "LastModifiedBy": "#/components/schemas/FieldTypeLastModifiedBy",
+            "GeoData": "#/components/schemas/FieldTypeGeoData",
+            "Geometry": "#/components/schemas/FieldTypeGeometry",
+            "JSON": "#/components/schemas/FieldTypeJSON",
+            "SpecificDBType": "#/components/schemas/FieldTypeSpecificDBType"
+          }
+        },
+        "type": "object"
+      },
+      "FieldTypeSingleLineText": {
+        "type": "object",
+        "properties": {
           "title": {
             "maxLength": 255,
             "type": "string",
+            "minLength": 1,
             "description": "Column Title"
           },
           "uidt": {
-            "enum": [
-              "Attachment",
-              "AutoNumber",
-              "Barcode",
-              "Button",
-              "Checkbox",
-              "Collaborator",
-              "Count",
-              "CreatedTime",
-              "Currency",
-              "Date",
-              "DateTime",
-              "Decimal",
-              "Duration",
-              "Email",
-              "Formula",
-              "ForeignKey",
-              "GeoData",
-              "Geometry",
-              "ID",
-              "JSON",
-              "LastModifiedTime",
-              "LongText",
-              "LinkToAnotherRecord",
-              "Lookup",
-              "MultiSelect",
-              "Number",
-              "Percent",
-              "PhoneNumber",
-              "Rating",
-              "Rollup",
-              "SingleLineText",
-              "SingleSelect",
-              "SpecificDBType",
-              "Time",
-              "URL",
-              "Year",
-              "QrCode",
-              "Links",
-              "User",
-              "CreatedBy",
-              "LastModifiedBy"
-            ],
-            "type": "string",
-            "description": "UI Data Type"
+            "$ref": "#/components/schemas/FieldTypeEnum"
           },
-          "un": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column unique?"
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
           },
-          "unique": {
-            "$ref": "#/components/schemas/Bool",
-            "description": "Is this column unique?"
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
           }
         },
-        "title": "Normal Column Request Model",
-        "type": "object",
         "required": [
-          "column_name"
-        ],
-        "x-stoplight": {
-          "id": "fn3gqmojvswv2"
-        }
+          "title"
+        ]
+      },
+      "FieldTypeLongText": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaLongText"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypePhoneNumber": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaValidation"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeEmail": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaValidation"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeURL": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaValidation"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeNumber": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeDecimal": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaDecimal"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypePercent": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaPercent"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeCurrency": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaCurrency"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeDuration": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaDuration"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeDate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaDate"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeTime": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaTime"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeDateTime": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaDateTime"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeYear": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeSingleSelect": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaSelect"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeMultiSelect": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaSelect"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeUser": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaUser"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeAttachment": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeCheckbox": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaCheckbox"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeRating": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/FieldTypeMetaRating"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeButton": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaButton"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeFormula": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "formula_raw": {
+            "type": "string",
+            "description": "Formula to compute the value of this column. You can use other columns in the same table to compute the value using moustache syntax. Example: `{col1} + {col2}`"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          }
+        },
+        "required": [
+          "title",
+          "formula_raw"
+        ]
+      },
+      "FieldTypeBarcode": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaBarcode"
+          }
+        },
+        "required": [
+          "title",
+          "colOptions"
+        ]
+      },
+      "FieldTypeQrCode": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaQrCode"
+          }
+        },
+        "required": [
+          "title",
+          "colOptions"
+        ]
+      },
+      "FieldTypeLinks": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaLinks"
+          }
+        },
+        "required": [
+          "title",
+          "colOptions"
+        ]
+      },
+      "FieldTypeLinkToAnotherRecord": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaLinks"
+          }
+        },
+        "required": [
+          "title",
+          "colOptions"
+        ]
+      },
+      "FieldTypeLookup": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaLookup"
+          }
+        },
+        "required": [
+          "title",
+          "colOptions"
+        ]
+      },
+      "FieldTypeRollup": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "colOptions": {
+            "$ref": "#/components/schemas/FieldTypeMetaRollup"
+          }
+        },
+        "required": [
+          "title",
+          "colOptions"
+        ]
+      },
+      "FieldTypeID": {
+        "type": "object",
+        "description": "System field. Unique record ID.",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeCreatedTime": {
+        "type": "object",
+        "description": "System field. Time when the record was created.",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeLastModifiedTime": {
+        "type": "object",
+        "description": "System field. Time when the record was last modified.",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeCreatedBy": {
+        "type": "object",
+        "description": "System field. User who created the record.",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeLastModifiedBy": {
+        "type": "object",
+        "description": "System field. User who last modified the record.",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeGeoData": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeGeometry": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeJSON": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "FieldTypeSpecificDBType": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 255,
+            "type": "string",
+            "minLength": 1,
+            "description": "Column Title"
+          },
+          "uidt": {
+            "$ref": "#/components/schemas/FieldTypeEnum"
+          },
+          "description": {
+            "$ref": "#/components/schemas/FieldTypeDescription"
+          },
+          "cdf": {
+            "$ref": "#/components/schemas/FieldTypeDefaultValue"
+          },
+          "pv": {
+            "$ref": "#/components/schemas/FieldTypePrimaryValue"
+          },
+          "rqd": {
+            "$ref": "#/components/schemas/FieldTypeRequired"
+          }
+        },
+        "required": [
+          "title"
+        ]
       },
       "OrgUserReq": {
         "description": "Model for Organisation User Update Request",
@@ -17839,24 +19135,6 @@
           }
         ],
         "properties": {
-          "sources": {
-            "description": "Array of Bases",
-            "items": {
-              "$ref": "#/components/schemas/BaseReq"
-            },
-            "type": "array"
-          },
-          "color": {
-            "description": "Primary Theme Color",
-            "example": "#24716E",
-            "maxLength": 50,
-            "type": "string"
-          },
-          "description": {
-            "description": "Base Description",
-            "example": "This is my base description",
-            "type": "string"
-          },
           "title": {
             "description": "Base Title",
             "example": "My Base",
@@ -17864,25 +19142,16 @@
             "minLength": 1,
             "type": "string"
           },
-          "status": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Base Status",
-            "example": "locked"
+          "description": {
+            "description": "Base Description",
+            "example": "This is my base description",
+            "type": "string"
           },
-          "type": {
-            "type": "string",
-            "enum": [
-              "database",
-              "documentation",
-              "dashboard"
-            ]
-          },
-          "linked_db_project_ids": {
-            "description": "List of Linked Database Base IDs (only used for Dashboard Projects so far)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "color": {
+            "description": "Primary Theme Color",
+            "example": "#24716E",
+            "maxLength": 50,
+            "type": "string"
           },
           "meta": {
             "$ref": "#/components/schemas/Meta",
@@ -17914,19 +19183,6 @@
         "title": "Base Update Request Model",
         "type": "object",
         "properties": {
-          "color": {
-            "description": "Primary Theme Color",
-            "example": "#24716E",
-            "maxLength": 50,
-            "type": "string"
-          },
-          "meta": {
-            "$ref": "#/components/schemas/Meta",
-            "description": "Base Meta",
-            "x-stoplight": {
-              "id": "m05w9sbwqgul3"
-            }
-          },
           "title": {
             "description": "Base Title",
             "example": "My Base",
@@ -17934,23 +19190,24 @@
             "minLength": 1,
             "type": "string"
           },
-          "status": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Base Status",
-            "example": "locked"
-          },
-          "linked_db_project_ids": {
-            "description": "List of Linked Database Base IDs (only used for Dashboard Projects so far)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "color": {
+            "description": "Primary Theme Color",
+            "example": "#24716E",
+            "maxLength": 50,
+            "type": "string"
           },
           "order": {
             "type": "number",
             "description": "The order of the list of projects.",
             "example": 1,
             "minimum": 0
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Base Meta",
+            "x-stoplight": {
+              "id": "m05w9sbwqgul3"
+            }
           }
         }
       },
@@ -18682,8 +19939,8 @@
           "id": "p1g7xrgdsn540"
         }
       },
-      "StringOrNullOrBooleanOrNumber": {
-        "description": "Model for StringOrNullOrBooleanOrNumber",
+      "FieldDefaultValue": {
+        "description": "Model for FieldDefaultValue",
         "examples": [
           "string"
         ],
@@ -18701,7 +19958,7 @@
             "type": "number"
           }
         ],
-        "title": "StringOrNullOrBooleanOrNumber Model"
+        "title": "FieldDefaultValue Model"
       },
       "Table": {
         "description": "Model for Table",
@@ -19371,6 +20628,13 @@
           }
         ],
         "properties": {
+          "table_name": {
+            "description": "Table name",
+            "example": "my_table",
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
           "columns": {
             "description": "The column models in this table",
             "items": {
@@ -19378,20 +20642,8 @@
             },
             "type": "array"
           },
-          "meta": {
-            "$ref": "#/components/schemas/Meta",
-            "description": "the meta data for this table"
-          },
-          "order": {
-            "description": "The order of table list",
-            "example": 1,
-            "type": "number"
-          },
-          "table_name": {
-            "description": "Table name",
-            "example": "my_table",
-            "maxLength": 255,
-            "minLength": 1,
+          "description": {
+            "description": "Table description",
             "type": "string"
           },
           "title": {
@@ -19891,38 +21143,26 @@
         "examples": [
           {
             "title": "My Grid View",
-            "type": 3,
-            "copy_from_id": null,
-            "fk_grp_col_id": null,
-            "fk_geo_data_col_id": null
+            "type": 3
           },
           {
             "title": "My Gallery View",
             "type": 2,
-            "copy_from_id": null,
-            "fk_grp_col_id": null,
-            "fk_geo_data_col_id": null
+            "fk_grp_col_id": null
           },
           {
             "title": "My Form View",
-            "type": 1,
-            "copy_from_id": null,
-            "fk_grp_col_id": null,
-            "fk_geo_data_col_id": null
+            "type": 1
           },
           {
             "title": "My Kanban View",
             "type": 4,
-            "copy_from_id": null,
-            "fk_grp_col_id": "cl_g0a89q9xdry3lu",
-            "fk_geo_data_col_id": null
+            "fk_grp_col_id": "cl_g0a89q9xdry3lu"
           },
           {
             "title": "My Map View",
             "type": 5,
-            "copy_from_id": null,
-            "fk_grp_col_id": null,
-            "fk_geo_data_col_id": "cl_uu1meolj00tlrq"
+            "fk_grp_col_id": null
           }
         ],
         "properties": {
@@ -19933,23 +21173,16 @@
           },
           "type": {
             "type": "number",
-            "description": "View Type"
-          },
-          "copy_from_id": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "ID of view to be copied from. Used in Copy View."
+            "description": "View Type.\n\n 1. `Form`\n\n 2. `Gallery`\n\n 3. `Grid`\n\n 4. `Kanban`\n\n 5. `Map` (internal testing)\n\n 6. `Calendar`"
           },
           "fk_grp_col_id": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Foreign Key to Grouping Column. Used in creating Kanban View."
-          },
-          "fk_geo_data_col_id": {
-            "$ref": "#/components/schemas/StringOrNull",
-            "description": "Foreign Key to Geo Data Column. Used in creating Map View."
+            "description": "Foreign Key to Grouping Column. Used in creating Gallery / Kanban / Calendar View. Optional in Gallery view",
+            "type": "string"
           }
         },
         "required": [
-          "title"
+          "title",
+          "type"
         ]
       },
       "ViewUpdateReq": {
